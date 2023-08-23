@@ -1,0 +1,53 @@
+{
+    "css_vars": {
+        "header-bg-color": "#242424",
+        "table-text-color": "#000",
+        "table-bg-color": "#47ab37",
+        "table-border-color": "black",
+        "animation-speed": "3s",
+        "table-font-size": "2.2vw",
+        "table-border-thickness": "0.3vh",
+        "table-text": "4.9vw",
+        "word-font-size": "calc(5vw + 3vh + 1.5vmin)",
+        "shadow": "#000000",
+        "word-color": "red",
+        "word_border_color": "black"
+    },
+    "times": {
+        "Montag": [
+            "33",
+            "22"
+        ],
+        "Dienstag": [
+            "sda",
+            "dsa"
+        ],
+        "Mittwoch": [
+            "dsdssadsa",
+            "ssss"
+        ],
+        "Donnerstag": [
+            "7s",
+            "dsad"
+        ],
+        "Freitag": [
+            "9s",
+            "10"
+        ]
+    },
+    "status": {
+        "Ge\u00c3\u00b6ffnet": {
+            "word_color": "green",
+            "background": "green"
+        },
+        "Geschlossen": {
+            "word_color": "red",
+            "background": "red"
+        },
+        "Gleich zur\u00c3\u00bcck": {
+            "word_color": "#000000",
+            "background": "#ffff00"
+        }
+    },
+    "current_status": "Geschlossen"
+}

@@ -1,0 +1,51 @@
+<form method="post" action="{{ url_for('settings_post') }}">
+    <h3>Time Settings</h3>
+    <table>
+        <tr>
+            <th>Day</th>
+            <th>Morning</th>
+            <th>Afternoon</th>
+        </tr>
+        <tr>
+            <td>Montag</td>
+            <td><input type="text" id="Montag_morning" name="Montag_morning" value="{{ times['Montag'][0] }}"></td>
+            <td><input type="text" id="Montag_afternoon" name="Montag_afternoon" value="{{ times['Montag'][1] }}"></td>
+        </tr>
+        <tr>
+            <td>Dienstag</td>
+            <td><input type="text" id="Dienstag_morning" name="Dienstag_morning" value="{{ times['Dienstag'][0] }}"></td>
+            <td><input type="text" id="Dienstag_afternoon" name="Dienstag_afternoon" value="{{ times['Dienstag'][1] }}"></td>
+        </tr>
+        <tr>
+            <td>Mittwoch</td>
+            <td><input type="text" id="Mittwoch_morning" name="Mittwoch_morning" value="{{ times['Mittwoch'][0] }}"></td>
+            <td><input type="text" id="Mittwoch_afternoon" name="Mittwoch_afternoon" value="{{ times['Mittwoch'][1] }}"></td>
+        </tr>
+        <tr>
+            <td>Donnerstag</td>
+            <td><input type="text" id="Donnerstag_morning" name="Donnerstag_morning" value="{{ times['Donnerstag'][0] }}"></td>
+            <td><input type="text" id="Donnerstag_afternoon" name="Donnerstag_afternoon" value="{{ times['Donnerstag'][1] }}"></td>
+        </tr>
+        <tr>
+            <td>Freitag</td>
+            <td><input type="text" id="Freitag_morning" name="Freitag_morning" value="{{ times['Freitag'][0] }}"></td>
+            <td><input type="text" id="Freitag_afternoon" name="Freitag_afternoon" value="{{ times['Freitag'][1] }}"></td>
+        </tr>
+    </table>
+
+    <h3>Edit CSS Settings</h3>
+
+    {% for var_name, value in css_vars.items() %}
+        {% if var_name == 'animation-speed' %}
+            <h3>Animation Settings</h3>
+        {% elif var_name == 'table-font-size' %}
+            <h3>Table Font & Border Settings</h3>
+        {% endif %}
+
+        <label for="{{ var_name }}">{{ var_name.replace('-', ' ').title() }}:</label>
+        <input type="text" id="{{ var_name }}" name="{{ var_name }}" value="{{ value }}">
+        <br>
+    {% endfor %}
+
+    <input type="submit" value="Update">
+</form>
