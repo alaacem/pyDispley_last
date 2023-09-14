@@ -1,21 +1,22 @@
 {
     "css_vars": {
-        "header-bg-color": "#242424",
+        "header-bg-color": "red",
         "table-text-color": "#000",
         "table-bg-color": "#47ab37",
         "table-border-color": "black",
         "animation-speed": "3s",
         "table-font-size": "2.2vw",
-        "table-border-thickness": "0.3vh",
+        "table-border-thickness": "0.1vh",
         "table-text": "4.9vw",
-        "word-font-size": "calc(5vw + 3vh + 1.5vmin)",
-        "shadow": "#000000",
-        "word-color": "red",
-        "word_border_color": "black"
+        "word-font-size": "calc(2.5vw + 3vh + 1.5vmin)",
+        "word-color": "green",
+        "shadow": "black",
+        "word_border_color": "black",
+        "table-header-text-color": "black"
     },
     "times": {
         "Montag": [
-            "33",
+            "10:00 - 14:00",
             "22"
         ],
         "Dienstag": [
@@ -36,18 +37,17 @@
         ]
     },
     "status": {
-        "Ge\u00c3\u00b6ffnet": {
-            "word_color": "green",
-            "background": "green"
+        "Ge\u00f6ffnet": {
+            "word-color": "green",
+            "word-font-size": "calc(2.5vw + 3vh + 1.5vmin)"
         },
         "Geschlossen": {
-            "word_color": "red",
-            "background": "red"
+            "word-color": "red",
+            "word-font-size": "calc(3.5vw + 3vh + 1.5vmin)"
         },
-        "Gleich zur\u00c3\u00bcck": {
-            "word_color": "#000000",
-            "background": "#ffff00"
+        "Gleich zur\u00fcck": {
+            "word-color": "yellow"
         }
     },
-    "current_status": "Geschlossen"
+    "current_status": "Ge\u00f6ffnet"
 }

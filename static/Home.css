@@ -1,16 +1,17 @@
 :root {
-    --header-bg-color: #242424;
+    --table-header-text-color: black;
+    --header-bg-color: red;
     --table-text-color: #000;
     --table-bg-color: #47ab37;
     --table-border-color: black;
     --table-border-color: black;
     --animation-speed: 3s;
     --table-font-size: 2.2vw;
-    --table-border-thickness: 0.3vh;
+    --table-border-thickness: 0.1vh;
     --table-text: 4.9vw;
-    --word-font-size: calc(5vw + 3vh + 1.5vmin);
-    --shadow: #000000;
-    --word-color: red;
+    --word-font-size: calc(2.5vw + 3vh + 1.5vmin);
+    --word-color: green;
+    --shadow: black;
     --word_border_color: black;
 
 }
@@ -22,7 +23,7 @@ body {
     align-self: center;
     justify-content: space-between;
     margin: 0;
-    background-image:linear-gradient(#cccccc, var(--word-color));
+    background-image: linear-gradient(#cccccc, var(--word-color));
     position: relative;
     flex-direction: column;
     justify-content: center;
@@ -32,52 +33,65 @@ body {
 
 .header {
     position: absolute;
-    top: 0;
+    top: 2%;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background-color: var(--header-bg-color);
+    padding: 30px;
+
+    /*background-color: var(--header-bg-color);*/
 }
+
 .content .text-above {
     position: absolute;
     display: flex;
 
     justify-content: space-between;
-    font-size: 3.5em; /* Adjust the font size as needed. */
+    font-size: 3.5em;
+    color: black;
+    /* Adjust the font size as needed. */
 }
+
 .logo-text {
-    font-size: calc(2.3vw + 2.3vh + 0.5vmin);
-    color: #fff;
+    font-size: calc(1.3vw + 1.3vh + 0.5vmin);
+    color: black;
     margin-left: 20px;
     transform: translate(-3%, -3%);
 }
+
 .logo-text .line1 {
     font-weight: bold;
-    font-size: calc(2vw + 2vh);  /* Adjust as required */
+    font-size: calc(2vw + 2vh);
+    /* Adjust as required */
 }
 
 .logo-text .line2 {
     font-weight: normal;
-    font-size: calc(1.5vw + 1.5vh);  /* Adjust as required */
+    font-size: calc(1.5vw + 1.5vh);
+    /* Adjust as required */
 }
-.text-above, .text-below {
+
+.text-above,
+.text-below {
     position: absolute;
-    font-size:var(--table-text);
+    font-size: var(--table-text);
     left: 1vw;
 }
 
 .text-above {
-    bottom: 52%;  /* Adjust this value to position the text above the table. */
+    bottom: 55%;
+    /* Adjust this value to position the text above the table. */
 }
 
 .text-below {
-    top: 52%;  /* Adjust this value to position the text below the table. */
+    top: 55%;
+    /* Adjust this value to position the text below the table. */
 }
+
 .header .logo {
     position: sticky;
-    width: 40vw;
+    width: 35vw;
     height: auto;
 
     transform: translate(-10%, -10%);
@@ -96,54 +110,74 @@ body {
     font-size: var(--table-font-size);
 }
 
+/* General table styling */
+.opening-times {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Table cell styling */
 .opening-times td {
     border: var(--table-border-thickness) solid var(--table-border-color);
     text-align: center;
     vertical-align: middle;
-
-    padding: 1vw;  /* Adjust padding based on viewport width */
+    padding: 1em;
+    font-weight: bold;
     color: var(--table-text-color);
 }
 
+/* Styling for even rows */
 .opening-times tr:nth-child(even) {
-    font-weight: var(--table-first-row-font-weight);
-
+    font-weight: bold;
+    color: black;
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
+/* Header row styling */
 .opening-times tr:first-child td {
     font-family: 'Exo 2', sans-serif;
-
     font-weight: bold;
-    font-size: 1.2em; /* Adjust as required */
+    background-color: gray;
+    /* default light gray */
+    color: var(--table-header-text-color, #333);
+    /* default dark gray */
 }
 
+
 .word-box {
+
     position: absolute;
+    top: 75%;
+    border: 10px solid var(--word_border_color);
+    box-sizing: border-box;
+    justify-content: space-between;
+    left: calc(15%);
+    right: calc(15%);
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 10px solid var(--word_border_color);
     animation: sway var(--animation-speed) infinite;
-    width: auto;
-    height: auto;
-    top: 80%;
-    right:3%;
-    padding: 10px;
-
-    transform: translateY(-50%,50%);
+    transform: translate(-50%, -50%);
 }
 
 .word-content {
-    display: flex;  /* <-- Add this */
-    transform-origin: 50% 50%;
-    justify-content: center;  /* <-- Add this */
-    align-items: center;  /* <-- Add this */
+    display: flex;
+    text-align: center;
+    /* Center align text */
+    line-height: normal;
+    /* Adjust line height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-wrap: break-word;
     font-family: 'Exo 2', sans-serif;
     text-transform: uppercase;
+    flex-wrap: wrap;
+
     font-size: var(--word-font-size);
     font-weight: 700;
     background-clip: text;
-    color:var(--word-color);
+    color: var(--word-color);
     text-shadow:
         1px 1px 1px var(--shadow),
         1px 2px 1px var(--shadow),
@@ -159,11 +193,29 @@ body {
         1px 22px 10px rgba(16, 16, 16, 0.2),
         1px 25px 35px rgba(16, 16, 16, 0.2),
         1px 30px 60px rgba(16, 16, 16, 0.4);
-        transform-origin: 50% -32px;
+    transform-origin: -50% -50%;
+}
+
+.inner-box {
+    padding: 10px;
+    /* Add padding */
 }
 
 @keyframes sway {
-    0%, 80%, 100% { transform: rotate(0deg); }
-    10%, 50% { transform: rotate(-5deg); }
-    30%, 70% { transform: rotate(5deg); }
+
+    0%,
+    80%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    10%,
+    50% {
+        transform: rotate(-5deg);
+    }
+
+    30%,
+    70% {
+        transform: rotate(5deg);
+    }
 }

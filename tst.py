@@ -3,33 +3,10 @@ import os
 import re
 import logging
 from werkzeug.exceptions import BadRequestKeyError
-from lib.Config_Manger import ConfigManager
+from lib.Config_Manger import ConfigManager, FixedSizeRotatingFileHandler, FileManager
+import shutil
+from threading import Lock
 
-
-class FixedSizeRotatingFileHandler(logging.FileHandler):
-    def __init__(self, filename, mode='a+', maxBytes=0, encoding=None, delay=0):
-        logging.FileHandler.__init__(self, filename, mode, encoding, delay)
-        self.maxBytes = maxBytes
-
-    def emit(self, record):
-        if self.stream is None:
-            self.stream = self._open()
-        if self.maxBytes > 0:  # Are we rolling over?
-            msg = "%s\n" % self.format(record)
-            self.stream.seek(0, os.SEEK_END)  # Go to the end of the file
-            if self.stream.tell() + len(msg) > self.maxBytes:
-                # Figure out how much we need to trim from the start
-                trim_length = len(msg)
-                self.stream.seek(0)  # Go to the start
-                self.stream.read(trim_length)  # "read out" the part we want to trim
-                remaining_log = self.stream.read()  # save the remaining log content
-                self.stream.seek(0)
-                self.stream.truncate()  # empty the file
-                self.stream.write(remaining_log)
-            self.stream.write(msg)
-            self.stream.flush()
-        else:
-            logging.FileHandler.emit(self, record)
 
 app = Flask(__name__)
 
@@ -58,29 +35,46 @@ app_logger.addHandler(fh)
 
 json_file_path = "config.json"
 config_manager = ConfigManager(json_file_path)
+css_file_lock=Lock()
+file_manager = FileManager("static/Home.css",css_file_lock)
+
+def update_current_status(new_status):
+    config = config_manager.load()
+    if new_status in config['status']:
+        config['current_status'] = new_status
+        for property_name, property_value in config['status'][new_status].items():
+            config['css_vars'][property_name] = property_value
+            print(property_name,config['css_vars'][property_name],property_value,"\n",config)
+        config_manager.save(config)
+        update_css_file_from_config()
+        print(f"New Config: {config}")
+        return True
+    else:
+        return False
 
 
 def update_css_file_from_config():
     config = config_manager.load()
-    css_vars=config['css_vars']
-    with open("static/Home.css", "r") as file:
-        css_content = file.read()
+    css_vars = config['css_vars']
+
+
+    # Read the file using FileManager
+    css_content = file_manager.read_file()
 
     for var, value in css_vars.items():
         pattern = f'--{var}:\s*[^;]*;'
         if re.search(pattern, css_content):
             css_content = re.sub(pattern, f'--{var}: {value};', css_content)
-
         else:
             css_content = css_content.replace(':root {', f':root {{\n  --{var}: {value};')
-            print(var)
 
-    with open("static/Home.css", "w") as file:
-        file.write(css_content)
+    # Write the updated content using FileManager
+    file_manager.write_file(css_content)
+
 
 def load_css_vars():
-    with open("static/Home.css", "r") as file:
-        css_content = file.read()
+    css_content = file_manager.read_file()
+
 
     # Extract the content of the :root selector
     root_content_match = re.search(r':root\s*{\s*([^}]+)\s*}', css_content)
@@ -113,6 +107,45 @@ def load_status_word_from_config():
 def load_times_from_config():
     return config_manager.load()['times']
 
+
+def update_config_from_post_request():
+    config = config_manager.load()
+
+    # Update CSS variables
+    css_vars_from_file = load_css_vars()
+    new_css_vars = {key: request.form.get(key, default='') for key in css_vars_from_file.keys()}
+    config['css_vars'] = {**config.get('css_vars', {}), **new_css_vars}
+
+    # Update times
+    times = config['times']
+    for day in times.keys():
+        morning_time = request.form.get(f'{day}_morning')
+        afternoon_time = request.form.get(f'{day}_afternoon')
+        times[day] = [morning_time, afternoon_time]
+
+    # Update statuses
+    for status_key in config['status'].keys():
+        for property_name in config['status'][status_key].keys():
+            input_name = f"{status_key}_{property_name}"
+            config['status'][status_key][property_name] = request.form.get(input_name, default='')
+
+    config['times'] = times
+    config_manager.save(config)
+
+def update_config_from_status_change(new_status):
+    config = config_manager.load()
+    print(new_status)
+    print(new_status in config['status'])
+    if new_status in config['status']:
+        config['current_status'] = new_status
+        for property_name, property_value in config['status'][new_status].items():
+            config['css_vars'][property_name] = property_value
+        config_manager.save(config)
+        update_css_file_from_config()
+        return True
+    else:
+        return False
+
 @app.errorhandler(BadRequestKeyError)
 def handle_bad_request(e):
     return f'bad request!:{e}', 400
@@ -132,11 +165,11 @@ def update_css_vars():
     # Check if specific CSS variables have changed
     word_color_changed = received_css_vars['word-color'] != config_css_vars['word-color']
     shadow_changed = received_css_vars['shadow'] != config_css_vars['shadow']
-    print(received_css_vars['word-color'],config_css_vars['word-color'])
+  #  print(received_css_vars['word-color'],config_css_vars['word-color'])
     # Check if the status word or times have changed
     status_word_changed = received_status_word != config_status_word
     times_changed = received_times != config_times
-    print(word_color_changed,shadow_changed,status_word_changed,times_changed)
+  #  print(word_color_changed,shadow_changed,status_word_changed,times_changed)
     # Determine if any changes occurred
     if word_color_changed or shadow_changed or status_word_changed or times_changed:
         global prev_css_vars, prev_status_word, prev_times
@@ -148,7 +181,6 @@ def update_css_vars():
         return {"refresh": True}
 
     return {"refresh": False}
-
 
 @app.route('/', methods=['GET'])
 def configure_times_get():
@@ -172,54 +204,35 @@ def configure_times_post():
     return redirect(url_for('configure_times_get'))
 
 
-@app.route('/update-times', methods=['POST'])
-def update_times():
-    config = config_manager.load()
-    times = config['times']
-    for day in times.keys():
-        morning_time = request.form.get(f'{day}_morning')
-        afternoon_time = request.form.get(f'{day}_afternoon')
-        times[day] = [morning_time, afternoon_time]
-
-    config['times'] = times
-    config_manager.save_if_changed(config)
-
-    return redirect(url_for('settings'))
-
-
 @app.route('/settings', methods=['GET'])
 def settings_get():
     config = config_manager.load()
     times = config['times']
     css_vars = load_css_vars()
-    return render_template('settings.html', css_vars=css_vars, times=times)
-
+    return render_template('settings.html', css_vars=css_vars, times=times, statuses=config['status'])
 
 @app.route('/settings', methods=['POST'])
 def settings_post():
-    config = config_manager.load()
-    css_vars_from_file = load_css_vars()
-
-    new_css_vars = {key: request.form.get(key, default='') for key in css_vars_from_file.keys()}
-    config['css_vars'] = {**config.get('css_vars', {}), **new_css_vars}
-    times = config['times']
-
-    for day in times.keys():
-        morning_time = request.form.get(f'{day}_morning')
-        afternoon_time = request.form.get(f'{day}_afternoon')
-        times[day] = [morning_time, afternoon_time]
-    config['times']=times
-    config_manager.save(config)
-
-    update_css_file_from_config()
-
+    update_config_from_post_request()
+    update_css_file_from_config()  # Update the CSS file based on the new config
     return redirect(url_for('settings_get'))
+
+@app.route('/update-status', methods=['POST'])
+def update_status():
+    received_data = request.json
+    new_status = received_data['current_status']
+    if update_config_from_status_change(new_status):
+        return {"message": "Status updated successfully"}
+    else:
+        return {"message": "Invalid status"}, 400
+
+
 
 @app.route('/css/<filename>')
 def serve_css(filename):
     return send_from_directory("static", filename)  # Adjusted directory
 
 
+
 if __name__ == "__main__":
-    prev_file_timestamp = None
-    app.run(debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=5000,debug=True, threaded=True)

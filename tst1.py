@@ -1,21 +1,39 @@
 import requests
 
-def test_set_background():
-    # Define the URL to change the background color
-    url = "http://localhost:5000/set_background/47ab37"  # This sets the background to orange
+# Define the URL
+URL = 'http://127.0.0.1:7296/API/DEVICES/'
 
-    # Send a request to the Flask app
-    response = requests.get(url)
+# Define the headers
+HEADERS = {
+    'Content-Type': 'text/plain;charset=UTF-8',
+    'Accept': '*/*'
+}
 
-# Run the test
-test_set_background()
-"""
-:root {
-  --red: #33a540;
-  /*--red: #ff0000;*/
-  --green: #47ab37;
-  --white: #ffffff;
-  --cellsize: 40px;
-  --black: #030300;
-  --abstand: 10px;
-}"""
+# Define the payload
+DATA = {
+    "cmd": "api_code",
+    "session": 1,
+    "method": "write",
+    "cmd_code": 16,
+    "data": [
+        {
+            "code": 0,
+            "number": 0,  # Key number 1
+            "values": [0, 0, 0, 255, 0, 0, 0, 0]  # Color values for key number 1
+        },
+        {
+            "code": 0,
+            "number": 2,  # Key number 2
+            "values": [255, 0, 0, 255, 0, 0, 0, 0]  # Color values for key number 2
+        }
+    ]
+}
+
+# Make the POST request
+response = requests.post(URL, json=DATA, headers=HEADERS)
+
+# Check the response
+if response.status_code == 200:
+    print("RGB color set successfully!")
+else:
+    print("Failed to set RGB color:", response.text)
