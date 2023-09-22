@@ -19,7 +19,7 @@
     }
 
     // Check every 5 seconds
-   // setInterval(checkForRefresh, 1000);
+    // setInterval(checkForRefresh, 1000);
   </script>
   <script>
 
@@ -41,14 +41,14 @@
         var afternoonTime = document.querySelector(`.opening-times tr:nth-child(3) td:nth-child(${index + 1})`).textContent;
         times[day] = [morningTime, afternoonTime];
       });
-
+      var bottom_text = document.querySelector(".text-below").innerHTML;
       // Send the CSS variables, current_status_word, and times to the server
       fetch('/update-css-vars', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ cssVars, currentStatusWord, times }),
+        body: JSON.stringify({ cssVars, currentStatusWord, times, bottom_text }),
       })
         .then(response => response.json()) // Parse the JSON response
         .then(data => {
@@ -74,6 +74,8 @@
     <img alt="Logo" class="logo" src="{{ url_for('static', filename='logo.png') }}" />
   </div>
   <h3 class="text-above">Unsere Öffnungszeiten:</h3>
+  <h4 class="date-range">Gültig von {{ von }} bis {{ bis }}</h4>
+
 
   <table class="opening-times">
     <tr>
@@ -98,7 +100,7 @@
       <td>{{ times['Freitag'][1] }}</td>
     </tr>
   </table>
-  <h3 class="text-below">This is the text below the table</h3>
+  <h3 class="text-below">{{bottom_text|safe}}</h3>
 
   <div class="word-box">
     <div class="inner-box">

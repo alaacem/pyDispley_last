@@ -1,53 +1,69 @@
 {
     "css_vars": {
-        "header-bg-color": "red",
+        "header-bg-color": "#242424",
         "table-text-color": "#000",
         "table-bg-color": "#47ab37",
         "table-border-color": "black",
         "animation-speed": "3s",
         "table-font-size": "2.2vw",
-        "table-border-thickness": "0.1vh",
-        "table-text": "4.9vw",
-        "word-font-size": "calc(2.5vw + 3vh + 1.5vmin)",
-        "word-color": "green",
-        "shadow": "black",
-        "word_border_color": "black",
+        "table-border-thickness": "0.3vh",
+        "table-text": "3.9vw",
+        "word-font-size": "calc(5vw + 3vh + 1.5vmin)",
+        "word-color": "yellow",
+        "shadow": "#242424",
+        "word_border_color": "Black",
         "table-header-text-color": "black"
     },
     "times": {
-        "Montag": [
-            "10:00 - 14:00",
-            "22"
-        ],
-        "Dienstag": [
-            "sda",
-            "dsa"
-        ],
-        "Mittwoch": [
-            "dsdssadsa",
-            "ssss"
-        ],
-        "Donnerstag": [
-            "7s",
-            "dsad"
-        ],
-        "Freitag": [
-            "9s",
-            "10"
-        ]
+        "start_date": "25.09.2023",
+        "end_date": "29.09.2023",
+        "schedule": {
+            "Montag": [
+                "10:30 - 12:00",
+                "12:30 - 16:00"
+            ],
+            "Dienstag": [
+                "10:30 - 12:00",
+                "12:30 - 16:00"
+            ],
+            "Mittwoch": [
+                "geschlossen",
+                ""
+            ],
+            "Donnerstag": [
+                "11:30 - 16:30",
+                ""
+            ],
+            "Freitag": [
+                "11:30 - 16:30",
+                ""
+            ]
+        }
     },
     "status": {
         "Ge\u00f6ffnet": {
-            "word-color": "green",
-            "word-font-size": "calc(2.5vw + 3vh + 1.5vmin)"
+            "word-color": "green"
         },
         "Geschlossen": {
-            "word-color": "red",
-            "word-font-size": "calc(3.5vw + 3vh + 1.5vmin)"
+            "word-color": "red"
         },
         "Gleich zur\u00fcck": {
             "word-color": "yellow"
         }
     },
-    "current_status": "Ge\u00f6ffnet"
+    "current_status": "Gleich zur\u00fcck",
+    "enable_scraping": true,
+    "valid_date": "12:30 - 16:00 Uhr",
+    "scrapper_config": {
+        "url": "https://www.hs-kl.de/hochschule/servicestellen/rechenzentrum/servicepoints-und-hilfe",
+        "frame_id": "c4849",
+        "refresh_time": 10000,
+        "valid_date": null
+    },
+    "bottom_text": "Au\u00dferhalb die \u00d6ffnungszeiten : <a href=\"\">help@hs-kl.de</a>",
+    "shutdown": {
+        "display_spar": false,
+        "start": "00:00",
+        "end": "00:01"
+    }
 }
