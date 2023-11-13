@@ -15,16 +15,16 @@
         "table-header-text-color": "black"
     },
     "times": {
-        "start_date": "25.09.2023",
-        "end_date": "29.09.2023",
+        "start_date": "09.10.2023",
+        "end_date": "13.10.2023",
         "schedule": {
             "Montag": [
-                "10:30 - 12:00",
-                "12:30 - 16:00"
+                "geschlossen",
+                ""
             ],
             "Dienstag": [
-                "10:30 - 12:00",
-                "12:30 - 16:00"
+                "geschlossen",
+                ""
             ],
             "Mittwoch": [
                 "geschlossen",
