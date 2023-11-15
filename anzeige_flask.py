@@ -9,10 +9,13 @@ import re
 import logging
 from werkzeug.exceptions import BadRequestKeyError
 from threading import Lock
+from setting import settings_bp
+
 
 
 
 app = Flask(__name__)
+app.register_blueprint(settings_bp, url_prefix='/settings')
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -223,22 +226,7 @@ def configure_times_post():
     return redirect(url_for('configure_times_get'))
 
 
-@app.route('/settings', methods=['GET'])
-def settings_get():
-    config = config_manager.load()
-    times = config['times']['schedule']
-    enable_scraping=config['enable_scraping']
-    css_vars = load_css_vars()
-    scrapper_config=config['scrapper_config']
-    bottom_text=config["bottom_text"]
-    return render_template('settings.html', css_vars=css_vars, times=times, statuses=config['status'],enable_scraping=enable_scraping,scrapper_config=scrapper_config,bottom_text=bottom_text)
 
-@app.route('/settings', methods=['POST'])
-def settings_post():
-
-    update_config_from_post_request()
-    update_css_file_from_config()  # Update the CSS file based on the new config
-    return redirect(url_for('settings_get'))
 
 @app.route('/update-status', methods=['POST'])
 def update_status():
@@ -259,6 +247,7 @@ if __name__ == "__main__":
     json_file_path = "config.json"
 
     config_manager = ConfigManager(json_file_path)
+
     file_manager = FileManager("static/Home.css")
     app.run(host='0.0.0.0', port=4000,debug=True, threaded=True,use_reloader=False)
 

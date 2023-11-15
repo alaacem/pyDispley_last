@@ -1,28 +1,32 @@
-from flask import Flask
-from models import db, Config
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///config.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
+import json
+import fasteners
 
 class ConfigManager:
-    def __init__(self):
-        with app.app_context():
-            db.create_all()
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.lock = fasteners.InterProcessLock(self.file_path + ".lock")
 
     def load(self):
-        with app.app_context():
-            configs = Config.query.all()
-            return {config.key: config.value for config in configs}
+        with open(self.file_path, "r", encoding="utf-8") as file:
+            return json.load(file)
 
-    def save(self, config_data):
-        with app.app_context():
-            for key, value in config_data.items():
-                config = Config.query.filter_by(key=key).first()
-                if not config:
-                    new_config = Config(key=key, value=value)
-                    db.session.add(new_config)
-                else:
-                    config.value = value
-            db.session.commit()
+    def save(self, data):
+        with self.lock:
+            with open(self.file_path, "w", encoding="utf-8") as file:
+                json.dump(data, file, indent=4)
+
+    def update_value(self, key, value):
+        data = self.load()
+        if key not in data:
+            return None
+        data[key] = value
+        self.save(data)
+
+    def has_changes(self, other_config):
+        current_config = self.load()
+        return current_config != other_config
+
+    def save_if_changed(self, new_config):
+        current_config = self.load()
+        if current_config != new_config:
+            self.save(new_config)

@@ -1,14 +1,13 @@
 <head>
     <script>
-        // Function to update the current status
-        function updateStatus() {
-            var status = document.getElementById('currentStatus').value;
-            fetch('/update-status', {
+        function updateCssSettings(event) {
+            event.preventDefault();
+            var form = document.getElementById('cssSettingsForm');
+            var formData = new FormData(form);
+
+            fetch('/settings/update-css-settings', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ current_status: status }),
+                body: formData
             })
                 .then(response => response.json())
                 .then(data => {
@@ -18,17 +17,63 @@
                     console.error('Error:', error);
                 });
         }
-
-        // Function to update the settings
-        function updateSettings() {
-            // Fetch your form
-            var form = document.getElementById('settingsForm');
-
-            // Create a FormData object from the form
+        function updateScrappingSettings(event) {
+            event.preventDefault();
+            var form = document.getElementById('ScrappingSettingsForm');
             var formData = new FormData(form);
 
-            // Send the form data to your server-side function
-            fetch('/settings', {
+            fetch('/settings/update-scrapping-config', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+        function updateStatuSettings(event) {
+            event.preventDefault();
+            var form = document.getElementById('statuSettingsForm');
+            var formData = new FormData(form);
+
+            fetch('/settings/update-status', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+        function updateTimeSettings(event) {
+            event.preventDefault();
+            var form = document.getElementById('timeSettingsForm');
+            var formData = new FormData(form);
+
+            fetch('/settings/update-times-woche', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+        function updateDisplaySparSettings(event) {
+            event.preventDefault();
+            var form = document.getElementById('displaySparSettingsForm');
+            var formData = new FormData(form);
+
+            fetch('/settings/update-display-spar', {
                 method: 'POST',
                 body: formData
             })
@@ -43,10 +88,18 @@
     </script>
 
 </head>
-</head>
 
 <body>
-    <form id="settingsForm" method="post">
+    <form id="cssSettingsForm" method="post" onsubmit="updateCssSettings(event);">
+        <h3>CSS Settings</h3>
+        {% for key, value in css_config.items() %}
+        <label for="{{ key }}">{{ key.replace('-', ' ').title() }}:</label>
+        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+        <br>
+        {% endfor %}
+        <input type="submit" value="Update CSS Settings">
+    </form>
+    <form id="timeSettingsForm" method="post" onsubmit="updateTimeSettings(event);">
         <h3>Time Settings</h3>
         <table>
             <tr>
@@ -89,8 +142,15 @@
                         value="{{ times['Freitag'][1] }}"></td>
             </tr>
         </table>
-        <td><input type="text" id="bottom_text" name="bottom_text" value="{{ bottom_text }}"></td>
-
+        <label for="start_date">Start Date:</label>
+        <input type="text" id="start_date" name="start_date" value="{{ start_date }}">
+        <br>
+        <label for="end_date">End Date:</label>
+        <input type="text" id="end_date" name="end_date" value="{{ end_date }}">
+        <br>
+        <input type="submit" value="Update Times">
+    </form>
+    <form id="statuSettingsForm" method="post" onsubmit="updateStatuSettings(event);">
         <h3>Edit Status Options</h3>
         {% for status, properties in statuses.items() %}
         <h4>{{ status }}</h4>
@@ -102,36 +162,38 @@
         <br>
         {% endfor %}
         {% endfor %}
-
-
-        <h3>Edit CSS Settings</h3>
-
-        {% for var_name, value in css_vars.items() %}
-        {% if var_name == 'animation-speed' %}
-        <h3>Animation Settings</h3>
-        {% elif var_name == 'table-font-size' %}
-        <h3>Table Font & Border Settings</h3>
-        {% endif %}
-        <label for="{{ var_name }}">{{ var_name.replace('-', ' ').title() }}:</label>
-        {% if value.startswith('#') or value.startswith('rgb') or value in ['red', 'green', 'blue', 'yellow', 'black',
-        'white'] %}
-        <!-- Render a color preview -->
-        <input type="text" id="{{ var_name }}" name="{{ var_name }}" value="{{ value }}">
-        <span style="display: inline-block; width: 20px; height: 20px; background-color: {{ value }};"></span>
-        {% else %}
-        <input type="text" id="{{ var_name }}" name="{{ var_name }}" value="{{ value }}">
-        {% endif %}
-        <br>
-        {% endfor %}
-        <input type="button" value="Update Settings" onclick="updateSettings()">
+        <input type="submit" value="Update Status Settings">
 
     </form>
-    <h3>Edit Current Status</h3>
-    <select id="currentStatus">
-        {% for status, options in statuses.items() %}
-        <option value="{{ status }}" {% if status==current_status %} selected {% endif %}>{{ status }}</option>
-        {% endfor %}
-    </select>
-    <input type="button" value="Update Status" onclick="updateStatus()">
 
+    <form id="ScrappingSettingsForm" method="post" onsubmit="updateScrappingSettings(event);">
+        <h3>Scrappping Settings</h3>
+        {% for key, value in scrappping.items() %}
+        <label for="{{ key }}">{{ key.replace('-', ' ').title() }}:</label>
+        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+        <br>
+        {% endfor %}
+        <input type="submit" value="Update Scrapping Settings">
+    </form>
+    <form id="displaySparSettingsForm" method="post" onsubmit="updateDisplaySparSettings(event);">
+        <h3>Display Spar Settings</h3>
+
+        <label for="display_spar">Display Spar:</label>
+        <select id="display_spar" name="display_spar">
+            <option value="true" {{ 'selected' if display_spar_config_data['display_spar'] else '' }}>True</option>
+            <option value="false" {{ 'selected' if not display_spar_config_data['display_spar'] else '' }}>False
+            </option>
+        </select>
+        <br>
+
+        <label for="start">Start Time:</label>
+        <input type="text" id="start" name="start" value="{{ display_spar_config_data['start'] }}">
+        <br>
+
+        <label for="end">End Time:</label>
+        <input type="text" id="end" name="end" value="{{ display_spar_config_data['end'] }}">
+        <br>
+
+        <input type="submit" value="Update Display Spar Settings">
+    </form>
 </body>

@@ -1,0 +1,11 @@
+{
+    "Ge\u00f6ffnet": {
+        "word-color": "green"
+    },
+    "Geschlossen": {
+        "word-color": "red"
+    },
+    "Gleich zur\u00fcck": {
+        "word-color": "yellow"
+    }
+}

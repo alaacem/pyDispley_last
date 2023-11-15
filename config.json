@@ -9,7 +9,7 @@
         "table-border-thickness": "0.3vh",
         "table-text": "3.9vw",
         "word-font-size": "calc(5vw + 3vh + 1.5vmin)",
-        "word-color": "yellow",
+        "word-color": "green",
         "shadow": "#242424",
         "word_border_color": "Black",
         "table-header-text-color": "black"
@@ -51,7 +51,7 @@
             "word-color": "yellow"
         }
     },
-    "current_status": "Gleich zur\u00fcck",
+    "current_status": "Ge\u00f6ffnet",
     "enable_scraping": true,
     "valid_date": "12:30 - 16:00 Uhr",
     "scrapper_config": {

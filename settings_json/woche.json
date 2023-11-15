@@ -1,0 +1,26 @@
+{
+    "start_date": "09.10.2023",
+    "end_date": "13.10.2023",
+    "schedule": {
+        "Montag": [
+            "geschlossen",
+            ""
+        ],
+        "Dienstag": [
+            "geschlossen",
+            ""
+        ],
+        "Mittwoch": [
+            "geschlossen",
+            ""
+        ],
+        "Donnerstag": [
+            "11:30 - 16:30",
+            ""
+        ],
+        "Freitag": [
+            "11:30 - 16:30",
+            ""
+        ]
+    }
+}
